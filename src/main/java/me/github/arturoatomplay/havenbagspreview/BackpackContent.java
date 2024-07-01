@@ -1,6 +1,6 @@
 package me.github.arturoatomplay.havenbagspreview;
 
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -30,12 +30,12 @@ public class BackpackContent {
         }
 
         public ItemStack getItemStack() {
-            ItemStack itemStack = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.of(String.format("minecraft:%s", i.toLowerCase()), ':')), c);
+            ItemStack itemStack = new ItemStack(Registry.ITEM.get(ResourceLocation.of(String.format("minecraft:%s", i.toLowerCase()), ':')), c);
 
             itemStack.setDamageValue(d);
 
             if (e) {
-                itemStack.enchant(BuiltInRegistries.ENCHANTMENT.get(ResourceLocation.of("minecraft:flame", ':')), 1);
+                itemStack.enchant(Registry.ENCHANTMENT.get(ResourceLocation.of("minecraft:flame", ':')), 1);
             }
 
             if (m != 0) {

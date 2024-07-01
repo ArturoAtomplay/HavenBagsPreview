@@ -1,11 +1,14 @@
 package me.github.arturoatomplay.havenbagspreview.tooltip;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +36,7 @@ public class ClientBackpackTooltip implements ClientTooltipComponent {
     }
 
     @Override
-    public void renderImage(Font font, int mouseX, int mouseY, GuiGraphics g) {
+    public void renderImage(Font font, int mouseX, int mouseY, PoseStack poseStack, ItemRenderer itemRenderer, int blitOffset, TextureManager textureManager) {
         int i = this.gridSizeX();
         int j = this.gridSizeY();
         int k = 0;
@@ -42,45 +45,46 @@ public class ClientBackpackTooltip implements ClientTooltipComponent {
             for (int m = 0; m < i; ++m) {
                 int n = mouseX + m * SLOT_SIZE_X + 1;
                 int o = mouseY + l * SLOT_SIZE_Y + 1;
-                this.renderSlot(n, o, k++, font, g);
+                this.renderSlot(n, o, k++, font, poseStack, itemRenderer, blitOffset);
             }
         }
 
-        this.drawBorder(mouseX, mouseY, i, j, g);
+        this.drawBorder(mouseX, mouseY, i, j, poseStack, blitOffset);
     }
 
-    private void renderSlot(int x, int y, int itemIndex, Font font, GuiGraphics g) {
+    private void renderSlot(int x, int y, int itemIndex, Font font, PoseStack poseStack, ItemRenderer itemRenderer, int blitOffset) {
         if (itemIndex >= this.unlockedSize) {
-            this.blit(g, x, y, Texture.BLOCKED_SLOT);
+            this.blit(poseStack, x, y, blitOffset, Texture.BLOCKED_SLOT);
         } else {
             ItemStack itemStack = this.items.get(itemIndex);
-            this.blit(g, x, y, ClientBackpackTooltip.Texture.SLOT);
-            g.renderItem(itemStack, x + 1, y + 1, itemIndex);
-            g.renderItemDecorations(font, itemStack, x + 1, y + 1);
+            this.blit(poseStack, x, y, blitOffset, ClientBackpackTooltip.Texture.SLOT);
+            itemRenderer.renderAndDecorateItem(itemStack, x + 1, y + 1, itemIndex);
+            itemRenderer.renderGuiItemDecorations(font, itemStack, x + 1, y + 1);
         }
     }
 
-    private void drawBorder(int x, int y, int slotWidth, int slotHeight, GuiGraphics g) {
-        this.blit(g, x, y, ClientBackpackTooltip.Texture.BORDER_CORNER_TOP);
-        this.blit(g, x + slotWidth * SLOT_SIZE_X + 1, y, ClientBackpackTooltip.Texture.BORDER_CORNER_TOP);
+    private void drawBorder(int x, int y, int slotWidth, int slotHeight, PoseStack poseStack, int blitOffset) {
+        this.blit(poseStack, x, y, blitOffset, ClientBackpackTooltip.Texture.BORDER_CORNER_TOP);
+        this.blit(poseStack, x + slotWidth * SLOT_SIZE_X + 1, y, blitOffset, ClientBackpackTooltip.Texture.BORDER_CORNER_TOP);
 
         for (int i = 0; i < slotWidth; ++i) {
-            this.blit(g, x + 1 + i * SLOT_SIZE_X, y, ClientBackpackTooltip.Texture.BORDER_HORIZONTAL_TOP);
-            this.blit(g, x + 1 + i * SLOT_SIZE_X, y + slotHeight * SLOT_SIZE_Y + 1, ClientBackpackTooltip.Texture.BORDER_HORIZONTAL_BOTTOM);
+            this.blit(poseStack, x + 1 + i * SLOT_SIZE_X, y, blitOffset, ClientBackpackTooltip.Texture.BORDER_HORIZONTAL_TOP);
+            this.blit(poseStack, x + 1 + i * SLOT_SIZE_X, y + slotHeight * SLOT_SIZE_Y + 1, blitOffset, ClientBackpackTooltip.Texture.BORDER_HORIZONTAL_BOTTOM);
         }
 
         for (int i = 0; i < slotHeight; ++i) {
-            this.blit(g, x, y + i * SLOT_SIZE_Y + 1, ClientBackpackTooltip.Texture.BORDER_VERTICAL);
-            this.blit(g, x + slotWidth * SLOT_SIZE_X + 1, y + i * SLOT_SIZE_Y + 1, ClientBackpackTooltip.Texture.BORDER_VERTICAL);
+            this.blit(poseStack, x, y + i * SLOT_SIZE_Y + 1, blitOffset, ClientBackpackTooltip.Texture.BORDER_VERTICAL);
+            this.blit(poseStack, x + slotWidth * SLOT_SIZE_X + 1, y + i * SLOT_SIZE_Y + 1, blitOffset, ClientBackpackTooltip.Texture.BORDER_VERTICAL);
         }
 
-        this.blit(g, x, y + slotHeight * SLOT_SIZE_Y + 1, Texture.BORDER_CORNER_BOTTOM);
-        this.blit(g, x + slotWidth * SLOT_SIZE_X + 1, y + slotHeight * SLOT_SIZE_Y + 1, ClientBackpackTooltip.Texture.BORDER_CORNER_BOTTOM);
+        this.blit(poseStack, x, y + slotHeight * SLOT_SIZE_Y + 1, blitOffset, Texture.BORDER_CORNER_BOTTOM);
+        this.blit(poseStack, x + slotWidth * SLOT_SIZE_X + 1, y + slotHeight * SLOT_SIZE_Y + 1, blitOffset, ClientBackpackTooltip.Texture.BORDER_CORNER_BOTTOM);
     }
 
-    private void blit(GuiGraphics g, int x, int y, ClientBackpackTooltip.Texture texture) {
+    private void blit(PoseStack poseStack, int i, int j, int k, ClientBackpackTooltip.Texture texture) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        g.blit(TEXTURE_LOCATION, x, y, 0, (float) texture.x, (float) texture.y, texture.w, texture.h, 128, 128);
+        RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
+        GuiComponent.blit(poseStack, i, j, k, (float)texture.x, (float)texture.y, texture.w, texture.h, 128, 128);
     }
 
     private int gridSizeX() {
