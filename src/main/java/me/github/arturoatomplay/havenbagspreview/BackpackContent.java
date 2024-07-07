@@ -1,9 +1,11 @@
 package me.github.arturoatomplay.havenbagspreview;
 
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.IntTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomModelData;
 
 import java.util.List;
 
@@ -39,7 +41,7 @@ public class BackpackContent {
             }
 
             if (m != 0) {
-                itemStack.addTagElement("CustomModelData", IntTag.valueOf(m));
+                itemStack.applyComponentsAndValidate(DataComponentPatch.builder().set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(m)).build());
             }
 
             return itemStack;
