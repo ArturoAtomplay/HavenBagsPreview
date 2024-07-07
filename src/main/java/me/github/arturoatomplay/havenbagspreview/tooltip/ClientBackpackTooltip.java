@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class ClientBackpackTooltip implements ClientTooltipComponent {
-    public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(HavenBagsPreview.MOD_ID, "textures/gui/bag.png");
+    public static final ResourceLocation TEXTURE_LOCATION = ResourceLocation.fromNamespaceAndPath(HavenBagsPreview.MOD_ID, "textures/gui/bag.png");
     private static final int SLOT_SIZE_X = 18;
     private static final int SLOT_SIZE_Y = 18;
     private final NonNullList<ItemStack> items;

@@ -6,7 +6,7 @@ plugins {
 group = project.maven_group
 
 base {
-    archivesName = "${project.archives_base_name}-${project.mod_version}_mc1.20.5-1.20.6"
+    archivesName = "${project.archives_base_name}-${project.mod_version}_mc1.21"
 }
 
 repositories {
