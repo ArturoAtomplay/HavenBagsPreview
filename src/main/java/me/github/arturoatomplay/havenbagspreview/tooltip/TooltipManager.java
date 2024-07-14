@@ -17,8 +17,7 @@ public class TooltipManager {
     public static Optional<TooltipComponent> getCustomTooltip(ItemStack stack) {
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 
-        if (!tag.contains("bag-uuid")) return Optional.empty();
-        if (tag.getString("bag-uuid").equals("null")) return Optional.empty();
+        if (!tag.contains("bag-uuid") || tag.getString("bag-uuid").equals("null")) return Optional.empty();
         if (!tag.contains("bag-preview-content")) return Optional.empty();
         if (!tag.contains("bag-size")) return Optional.empty();
 

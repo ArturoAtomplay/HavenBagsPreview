@@ -1,11 +1,18 @@
 package me.github.arturoatomplay.havenbagspreview;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomModelData;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 
@@ -36,8 +43,11 @@ public class BackpackContent {
 
             itemStack.setDamageValue(d);
 
-            if (e) {
-                // itemStack.enchant(BuiltInRegistries.ENCHANTMENT.get(ResourceLocation.of("minecraft:flame", ':')), 1); //This needs some fixing but otherwise it works
+            RegistryAccess registryAccess = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.level().registryAccess() : null;
+            HolderLookup.RegistryLookup<Enchantment> enchantments = registryAccess != null ? registryAccess.lookup(Registries.ENCHANTMENT).orElse(null) : null;
+
+            if (e && enchantments != null) {
+                itemStack.enchant(enchantments.getOrThrow(Enchantments.FLAME), 1);
             }
 
             if (m != 0) {

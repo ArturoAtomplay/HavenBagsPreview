@@ -1,31 +1,33 @@
 {
-  "schemaVersion": 1,
-  "id": "havenbagspreview",
-  "version": "${version}",
-  "name": "HavenBagsPreview",
-  "description": "havenbags preview on hover",
-  "authors": [
-    "ArturoAtomCode",
-    "ZtereoHYPE",
-    "masecla22"
-  ],
-  "contact": {
-    "homepage": "https://masecla.dev/",
-    "sources": "https://github.com/ArturoAtomplay/HavenBagsPreview"
-  },
-  "license": "MIT",
-  "icon": "assets/havenbagspreview/icon.png",
-  "environment": "client",
-  "entrypoints": {
-    "main": [
-      "me.github.arturoatomplay.havenbagspreview.HavenBagsPreview"
-    ]
-  },
-  "mixins": [
-    "havenbagspreview.mixins.json"
-  ],
-  "depends": {
-    "fabricloader": ">=0.15.7",
-    "minecraft": ["1.21"]
-  }
+	"schemaVersion": 1,
+	"id": "havenbagspreview",
+	"version": "${version}",
+	"name": "HavenBags Preview",
+	"description": "View the contents of your HavenBags bags directly in the inventory tooltip. ",
+	"authors": [
+		"ArturoAtomCode",
+		"ZtereoHYPE",
+		"masecla22"
+	],
+	"contact": {
+		"homepage": "https://masecla.dev/",
+		"sources": "https://github.com/ArturoAtomplay/HavenBagsPreview"
+	},
+	"license": "MIT",
+	"icon": "assets/havenbagspreview/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"main": [
+			"me.github.arturoatomplay.havenbagspreview.HavenBagsPreview"
+		]
+	},
+	"mixins": [
+		"havenbagspreview.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.7",
+		"fabric-api": "*",
+		"minecraft": "~1.21",
+		"java": ">=21"
+	}
 }
