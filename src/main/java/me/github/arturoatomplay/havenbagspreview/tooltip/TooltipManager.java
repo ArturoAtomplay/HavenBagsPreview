@@ -17,14 +17,16 @@ public class TooltipManager {
     public static Optional<TooltipComponent> getCustomTooltip(ItemStack stack) {
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 
-        if (!tag.contains("bag-uuid") || tag.getString("bag-uuid").equals("null")) return Optional.empty();
-        if (!tag.contains("bag-preview-content")) return Optional.empty();
-        if (!tag.contains("bag-size")) return Optional.empty();
+        Optional<String> uuid = tag.getString("bag-uuid");
+        Optional<String> content = tag.getString("bag-preview-content");
+        Optional<Integer> bagSlots = tag.getInt("bag-size");
 
-        int bagSlots = tag.getInt("bag-size");
-        NonNullList<ItemStack> bagInventory = NonNullList.withSize(bagSlots, ItemStack.EMPTY);
+        if (uuid.isEmpty() || content.isEmpty() || bagSlots.isEmpty()) {
+            return Optional.empty();
+        }
 
-        BackpackContent backpackContent = gson.fromJson(tag.getString("bag-preview-content"), BackpackContent.class);
+        NonNullList<ItemStack> bagInventory = NonNullList.withSize(bagSlots.get(), ItemStack.EMPTY);
+        BackpackContent backpackContent = gson.fromJson(content.get(), BackpackContent.class);
 
         for (BackpackContent.ItemData item : backpackContent.items) {
             int slot = item.getSlot();

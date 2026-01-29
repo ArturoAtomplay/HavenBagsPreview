@@ -52,7 +52,7 @@ public class BackpackContent {
             }
 
             if (m != 0) {
-                itemStack.applyComponentsAndValidate(DataComponentPatch.builder().set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(m)).build());
+                itemStack.applyComponentsAndValidate(DataComponentPatch.builder().set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(), List.of(), List.of(), List.of(m))).build());
             }
 
             return itemStack;
