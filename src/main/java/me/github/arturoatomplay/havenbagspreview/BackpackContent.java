@@ -38,7 +38,9 @@ public class BackpackContent {
         }
 
         public ItemStack getItemStack() {
-            ItemStack itemStack = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.bySeparator(String.format("minecraft:%s", i.toLowerCase()), ':')), c);
+            ItemStack itemStack = BuiltInRegistries.ITEM.getOptional(ResourceLocation.bySeparator(String.format("minecraft:%s", i.toLowerCase()), ':'))
+                .map(item -> new ItemStack(item, c))
+                .orElse(ItemStack.EMPTY);
 
             itemStack.setDamageValue(d);
 
