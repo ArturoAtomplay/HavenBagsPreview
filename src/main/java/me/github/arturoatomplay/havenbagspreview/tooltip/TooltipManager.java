@@ -8,20 +8,58 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import me.github.arturoatomplay.havenbagspreview.BackpackContent;
 import net.minecraft.world.item.component.CustomData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
 public class TooltipManager {
     private static final Gson gson = new Gson();
+    private static final Logger log = LoggerFactory.getLogger(TooltipManager.class);
 
     public static Optional<TooltipComponent> getCustomTooltip(ItemStack stack) {
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 
-        Optional<String> uuid = tag.getString("bag-uuid");
-        Optional<String> content = tag.getString("bag-preview-content");
-        Optional<Integer> bagSlots = tag.getInt("bag-size");
+        boolean nbt = false;
+        boolean pdc = false;
 
-        if (uuid.isEmpty() || content.isEmpty() || bagSlots.isEmpty()) {
+        // Check if NBT data exists
+        if (tag.contains("bag-preview-content") && tag.contains("bag-size")) {
+            nbt = true;
+        }
+
+        if (!tag.getCompound("PublicBukkitValues").get().getString("havenbags:mod").isEmpty()) {
+            pdc = true;
+        }
+
+        if (nbt && pdc) nbt = false; // If both are present, prioritize PDC data
+        if(!nbt && !pdc) return Optional.empty(); // If neither is present, return empty
+
+        Optional<String> content = Optional.empty();
+        Optional<Integer> bagSlots = Optional.empty();
+
+        if(nbt) {
+            content = tag.getString("bag-preview-content");
+            Optional<Integer> bagSizeOpt = tag.getInt("size");
+
+            if (content.isPresent() && bagSizeOpt.isPresent() && bagSizeOpt.get() > 0) {
+                bagSlots = bagSizeOpt;
+            }
+        }
+
+        if(pdc) {
+            Optional<CompoundTag> bukkitValuesOpt = tag.getCompound("PublicBukkitValues");
+
+            if (bukkitValuesOpt.isPresent()) {
+                CompoundTag bukkitValues = bukkitValuesOpt.get();
+
+                // Access havenbags:mod and havenbags:size directly from the compound tag
+                content = bukkitValues.getString("havenbags:mod");
+                bagSlots = bukkitValues.getInt("havenbags:size");
+            }
+        }
+
+        if (content.isEmpty() || bagSlots.isEmpty()) {
             return Optional.empty();
         }
 
