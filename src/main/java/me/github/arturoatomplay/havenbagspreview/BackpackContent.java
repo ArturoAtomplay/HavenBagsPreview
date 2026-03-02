@@ -32,6 +32,8 @@ public class BackpackContent {
         private boolean e;
         /** modelData */
         private int m;
+        /** itemmodel */
+        private String im;
 
         public int getSlot() {
             return s;
@@ -53,6 +55,10 @@ public class BackpackContent {
 
             if (m != 0) {
                 itemStack.applyComponentsAndValidate(DataComponentPatch.builder().set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(), List.of(), List.of(), List.of(m))).build());
+            }
+
+            if(im != null){
+                itemStack.applyComponentsAndValidate(DataComponentPatch.builder().set(DataComponents.ITEM_MODEL, ResourceLocation.parse(im)).build());
             }
 
             return itemStack;

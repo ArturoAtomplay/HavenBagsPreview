@@ -17,11 +17,45 @@ public class TooltipManager {
     public static Optional<TooltipComponent> getCustomTooltip(ItemStack stack) {
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 
-        Optional<String> uuid = tag.getString("bag-uuid");
-        Optional<String> content = tag.getString("bag-preview-content");
-        Optional<Integer> bagSlots = tag.getInt("bag-size");
+        boolean nbt = false;
+        boolean pdc = false;
 
-        if (uuid.isEmpty() || content.isEmpty() || bagSlots.isEmpty()) {
+        if (tag.contains("bag-preview-content") && tag.contains("bag-size")) {
+            nbt = true;
+        }
+
+        if (tag.contains("PublicBukkitValues")) {
+            pdc = true;
+        }
+
+        if (nbt && pdc) nbt = false; // If both are present, prioritize PDC data
+        if(!nbt && !pdc) return Optional.empty(); // If neither is present, return empty
+
+        Optional<String> content = Optional.empty();
+        Optional<Integer> bagSlots = Optional.empty();
+
+        if(nbt) {
+            content = tag.getString("bag-preview-content");
+            Optional<Integer> bagSizeOpt = tag.getInt("size");
+
+            if (content.isPresent() && bagSizeOpt.isPresent() && bagSizeOpt.get() > 0) {
+                bagSlots = bagSizeOpt;
+            }
+        }
+
+        if(pdc) {
+            Optional<CompoundTag> bukkitValuesOpt = tag.getCompound("PublicBukkitValues");
+
+            if (bukkitValuesOpt.isPresent()) {
+                CompoundTag bukkitValues = bukkitValuesOpt.get();
+
+                // Access havenbags:mod and havenbags:size directly from the compound tag
+                content = bukkitValues.getString("havenbags:mod");
+                bagSlots = bukkitValues.getInt("havenbags:size");
+            }
+        }
+
+        if (content.isEmpty() || bagSlots.isEmpty()) {
             return Optional.empty();
         }
 
