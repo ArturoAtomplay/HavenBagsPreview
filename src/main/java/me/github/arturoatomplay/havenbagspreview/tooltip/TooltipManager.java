@@ -24,7 +24,7 @@ public class TooltipManager {
             nbt = true;
         }
 
-        if (tag.contains("PublicBukkitValues")) {
+        if (!tag.getCompound("PublicBukkitValues").get().getString("havenbags:mod").isEmpty()) {
             pdc = true;
         }
 
