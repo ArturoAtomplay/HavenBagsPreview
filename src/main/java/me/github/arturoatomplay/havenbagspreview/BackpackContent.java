@@ -32,6 +32,8 @@ public class BackpackContent {
         private boolean e;
         /** modelData */
         private int m;
+        /** itemmodel */
+        private String im;
 
         public int getSlot() {
             return s;
