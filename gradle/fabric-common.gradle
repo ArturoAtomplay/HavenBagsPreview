@@ -1,0 +1,104 @@
+apply plugin: 'fabric-loom'
+apply plugin: 'maven-publish'
+apply plugin: 'com.modrinth.minotaur'
+
+group = rootProject.maven_group
+version = rootProject.mod_version
+
+base {
+    archivesName = "${rootProject.archives_base_name}-${project.name.replace('fabric-', '')}"
+}
+
+java {
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'Fabric'
+        url = 'https://maven.fabricmc.net/'
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.layered {
+        it.officialMojangMappings {
+            setNameSyntheticMembers(false)
+        }
+    }
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    implementation project(':common')
+}
+
+processResources {
+    inputs.property 'version', project.version
+    inputs.property 'loader_version_range', project.loader_version_range
+    inputs.property 'minecraft_version_range', project.minecraft_version_range
+    inputs.property 'java_version', project.java_version
+    
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version,
+               'loader_version_range': project.loader_version_range,
+               'minecraft_version_range': project.minecraft_version_range,
+               'java_version': project.java_version
+    }
+}
+
+jar {
+    from('../../../LICENSE') {
+        rename { "${it}_${rootProject.archives_base_name}" }
+    }
+    from(project(':common').sourceSets.main.output)
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = "${rootProject.archives_base_name}-${project.name.replace('fabric-', '')}"
+            from components.java
+        }
+    }
+}
+
+def devUsername = rootProject.findProperty('dev_username') ?: 'Player'
+
+loom {
+    runs {
+        client {
+            client()
+            setConfigName("Fabric Client ${project.name.replace('fabric-', '')}")
+            programArgs "--username=${devUsername}"
+        }
+    }
+    runConfigs.configureEach {
+        ideConfigGenerated = true
+        runDir = 'run'
+    }
+}
+
+modrinth {
+    token = System.getenv('MODRINTH_TOKEN')
+    projectId = 'havenbagspreview'
+    versionNumber = "${rootProject.mod_version}-${project.name}"
+    versionName = "HavenBags Preview ${rootProject.mod_version}"
+    versionType = 'release'
+    uploadFile = tasks.named('remapJar')
+    gameVersions = project.modrinth_game_versions.split(',') as List
+    loaders = ['fabric']
+    changelog = providers.exec {
+        workingDir(rootDir)
+        commandLine('bash', '-c', 'git log --format="- %s (%h)" $(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || git rev-list --max-parents=0 HEAD)..HEAD')
+    }.standardOutput.asText.get().trim()
+    
+    dependencies {
+        required.project 'fabric-api'
+    }
+}

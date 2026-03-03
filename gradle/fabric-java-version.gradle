@@ -1,0 +1,8 @@
+// Shared Java toolchain configuration for all Fabric versions
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(project.java_version)
+    }
+    sourceCompatibility = JavaVersion.toVersion(project.java_version)
+    targetCompatibility = JavaVersion.toVersion(project.java_version)
+}

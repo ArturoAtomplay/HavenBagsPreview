@@ -1,0 +1,16 @@
+apply from: rootProject.file('gradle/fabric-common.gradle')
+apply from: rootProject.file('gradle/fabric-java-version.gradle')
+
+loom {
+    runs {
+        client {
+            vmArg '-Dfabric.development=true'
+        }
+    }
+}
+
+tasks.withType(JavaExec).configureEach {
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(project.java_version)
+    }
+}
