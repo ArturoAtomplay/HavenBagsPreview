@@ -34,6 +34,10 @@ public class BackpackContent {
             itemStack.applyComponentsAndValidate(DataComponentPatch.builder().set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of((float) item.getModelData()), List.of(), List.of(), List.of())).build());
         }
 
+        if(item.getItemModel() != null){
+            itemStack.applyComponentsAndValidate(DataComponentPatch.builder().set(DataComponents.ITEM_MODEL, ResourceLocation.parse(item.getItemModel())).build());
+        }
+
         return itemStack;
     }
 }

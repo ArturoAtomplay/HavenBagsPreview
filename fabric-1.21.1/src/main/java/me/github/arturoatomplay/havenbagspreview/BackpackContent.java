@@ -13,8 +13,6 @@ import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
-import java.util.List;
-
 public class BackpackContent {
     public static ItemStack createItemStack(BackpackData.ItemData item) {
         ItemStack itemStack = BuiltInRegistries.ITEM.getOptional(ResourceLocation.bySeparator(String.format("minecraft:%s", item.getItemName().toLowerCase()), ':'))
@@ -31,7 +29,7 @@ public class BackpackContent {
         }
 
         if (item.getModelData() != 0) {
-            itemStack.applyComponentsAndValidate(DataComponentPatch.builder().set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of((float) item.getModelData()), List.of(), List.of(), List.of())).build());
+            itemStack.applyComponentsAndValidate(DataComponentPatch.builder().set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(item.getModelData())).build());
         }
 
         return itemStack;

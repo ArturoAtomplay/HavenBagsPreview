@@ -93,10 +93,11 @@ modrinth {
     uploadFile = tasks.named('remapJar')
     gameVersions = project.modrinth_game_versions.split(',') as List
     loaders = ['fabric']
-    changelog = providers.exec {
-        workingDir(rootDir)
-        commandLine('bash', '-c', 'git log --format="- %s (%h)" $(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || git rev-list --max-parents=0 HEAD)..HEAD')
-    }.standardOutput.asText.get().trim()
+    changelog = ""
+    //changelog = providers.exec {
+    //    workingDir(rootDir)
+    //    commandLine('bash', '-c', 'git log --format="- %s (%h)" $(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || git rev-list --max-parents=0 HEAD)..HEAD')
+    //}.standardOutput.asText.get().trim()
     
     dependencies {
         required.project 'fabric-api'
