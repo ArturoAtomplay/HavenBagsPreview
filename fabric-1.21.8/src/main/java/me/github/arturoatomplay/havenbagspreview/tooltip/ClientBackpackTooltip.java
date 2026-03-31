@@ -3,13 +3,11 @@ package me.github.arturoatomplay.havenbagspreview.tooltip;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import me.github.arturoatomplay.havenbagspreview.HavenBagsPreview;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 public class ClientBackpackTooltip implements ClientTooltipComponent {
     private static final ResourceLocation TEXTURE_LOCATION = ResourceLocation.fromNamespaceAndPath(HavenBagsPreview.MOD_ID, "textures/gui/bag.png");
@@ -81,7 +79,7 @@ public class ClientBackpackTooltip implements ClientTooltipComponent {
     }
 
     private void blit(GuiGraphics guiGraphics, int x, int y, Texture texture) {
-        guiGraphics.blit(RenderType::guiTextured, TEXTURE_LOCATION, x, y, (float)texture.x, (float)texture.y, texture.w, texture.h, 128, 128);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE_LOCATION, x, y, (float)texture.x, (float)texture.y, texture.w, texture.h, 128, 128);
     }
 
     private int gridSizeX() {
@@ -92,7 +90,6 @@ public class ClientBackpackTooltip implements ClientTooltipComponent {
         return (int) Math.ceil((double) unlockedSize / 9);
     }
 
-    @Environment(EnvType.CLIENT)
     enum Texture {
         SLOT(0, 0, SLOT_SIZE_X, SLOT_SIZE_Y),
         BLOCKED_SLOT(0, 40, SLOT_SIZE_X, SLOT_SIZE_Y),

@@ -1,0 +1,9 @@
+apply from: rootProject.file('gradle/fabric-common.gradle')
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(project.java_version)
+    }
+    sourceCompatibility = JavaVersion.toVersion(project.java_version)
+    targetCompatibility = JavaVersion.toVersion(project.java_version)
+}
